@@ -60,33 +60,33 @@ export default function HomeScreen() {
 
   const loadUserData = async () => {
     try {
-      const user = await blink.auth.me();
-      
-      // Load pilot data
-      const pilots = await blink.db.pilots.list({
-        where: { userId: user.id },
-        limit: 1
-      });
+      // Simulate loading with mock data
+      setTimeout(() => {
+        setPilot({
+          id: 'pilot_1',
+          name: 'COMMANDER NOVA',
+          level: 5,
+          experience: 1250,
+          credits: 2500,
+          gender: 'female',
+          originStory: 'military'
+        });
 
-      if (pilots.length > 0) {
-        setPilot(pilots[0]);
-      }
+        setEquippedMech({
+          id: 'mech_1',
+          name: 'MILITARY MK-I',
+          class: 'assault',
+          level: 3,
+          health: 100,
+          attack: 65,
+          defense: 40,
+          speed: 45
+        });
 
-      // Load equipped mech
-      const mechs = await blink.db.mechs.list({
-        where: { 
-          userId: user.id,
-          isEquipped: "1"
-        },
-        limit: 1
-      });
-
-      if (mechs.length > 0) {
-        setEquippedMech(mechs[0]);
-      }
+        setLoading(false);
+      }, 1000);
     } catch (error) {
       console.error('Error loading user data:', error);
-    } finally {
       setLoading(false);
     }
   };

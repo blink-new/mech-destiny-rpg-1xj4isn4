@@ -35,37 +35,14 @@ export default function WelcomeScreen() {
       true
     );
 
-    checkAuthStatus();
+    // Simple loading simulation
+    setTimeout(() => {
+      setLoading(false);
+    }, 1000);
   }, []);
 
-  const checkAuthStatus = async () => {
-    try {
-      const userData = await blink.auth.me();
-      setUser(userData);
-      
-      // Check if user has completed character creation
-      const progress = await blink.db.userProgress.list({
-        where: { userId: userData.id },
-        limit: 1
-      });
-
-      if (progress.length > 0 && Number(progress[0].tutorialCompleted) > 0) {
-        // User has completed setup, go to home
-        router.replace('/home');
-      }
-    } catch (error) {
-      console.log('User not authenticated');
-    } finally {
-      setLoading(false);
-    }
-  };
-
   const handleStartGame = () => {
-    if (user) {
-      router.push('/character-creation');
-    } else {
-      blink.auth.login('/welcome');
-    }
+    router.push('/character-creation');
   };
 
   const titleGlowStyle = useAnimatedStyle(() => ({
@@ -171,20 +148,16 @@ export default function WelcomeScreen() {
               colors={['#00D4FF', '#0099CC']}
               style={styles.buttonGradient}
             >
-              <Text style={styles.startButtonText}>
-                {user ? 'BEGIN MISSION' : 'NEURAL LINK REQUIRED'}
-              </Text>
+              <Text style={styles.startButtonText}>BEGIN MISSION</Text>
             </LinearGradient>
           </TouchableOpacity>
 
-          {user && (
-            <TouchableOpacity 
-              style={styles.secondaryButton}
-              onPress={() => router.push('/home')}
-            >
-              <Text style={styles.secondaryButtonText}>CONTINUE EXISTING SAVE</Text>
-            </TouchableOpacity>
-          )}
+          <TouchableOpacity 
+            style={styles.secondaryButton}
+            onPress={() => router.push('/home')}
+          >
+            <Text style={styles.secondaryButtonText}>CONTINUE EXISTING SAVE</Text>
+          </TouchableOpacity>
         </Animated.View>
 
         {/* Version Info */}
